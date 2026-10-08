@@ -105,6 +105,11 @@ body {
   cursor: pointer;
 }
 
+/* Start button text a little bigger than other main buttons */
+#start-button {
+  font-size: 22px;
+}
+
 .main-button:active {
   background: var(--primary-dark);
 }
