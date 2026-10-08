@@ -47,6 +47,18 @@ body {
   display: none !important;
 }
 
+/* Message bar at the top: no internet, or another problem */
+.notice {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 2px solid var(--danger);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--danger);
+  font-size: 16px;
+  font-weight: 600;
+}
+
 /* ---------- Start screen ---------- */
 
 #start-screen {
@@ -97,7 +109,7 @@ body {
 
 .logout-button {
   flex-shrink: 0;
-  min-height: 44px;
+  min-height: 48px;
   padding: 6px 14px;
   border: 2px solid var(--border);
   border-radius: 12px;
@@ -107,6 +119,16 @@ body {
   font-size: 16px;
   line-height: 1.5;
   cursor: pointer;
+}
+
+/* Daily streak on the start screen */
+.streak {
+  margin: 0 0 20px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  font-weight: 600;
 }
 
 /* Topic choice on the start screen */
@@ -152,6 +174,77 @@ body {
 
 .main-button:active {
   background: var(--primary-dark);
+}
+
+/* Smaller white buttons: leaderboard, weak topics, back */
+.more-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.second-button {
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 16px;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--primary);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+/* ---------- Leaderboard and weak topics screens ---------- */
+
+.list-title {
+  margin: 8px 0 16px;
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--primary);
+}
+
+.list-message {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.list-message:empty {
+  display: none;
+}
+
+.score-list {
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* One row: name or topic on the left, score on the right */
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.row-name {
+  min-width: 0;
+}
+
+.row-value {
+  flex-shrink: 0;
+  font-weight: 700;
 }
 
 /* ---------- Question screen ---------- */
@@ -258,6 +351,54 @@ body {
   font-weight: 700;
   line-height: 1.3;
   color: var(--primary);
+}
+
+/* Challenge a friend: the score to beat, and the result */
+.challenge-card {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  background: var(--card);
+  font-weight: 600;
+  text-align: center;
+}
+
+.topic-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.challenge-button {
+  margin-bottom: 12px;
+}
+
+.challenge-message {
+  margin: 0 0 8px;
+  color: var(--success);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* The link itself, so it can be copied by hand if needed */
+.challenge-link {
+  width: 100%;
+  min-height: 48px;
+  margin: 0 0 24px;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  font-family: monospace;
+  font-size: 14px;
+}
+
+/* Shown only if the round could not be saved */
+.save-error {
+  margin: 0 0 24px;
+  color: var(--danger);
+  font-size: 16px;
 }
 
 .mistakes-title {
