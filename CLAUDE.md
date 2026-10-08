@@ -4,6 +4,7 @@ Read `SPEC.md` before any task. It says what to build and what "done" means.
 
 ## How to build
 - Plain HTML, CSS and JavaScript only. Use plain JavaScript instead of React, Vue or any other framework. No build step, no npm packages.
+- One exception: the official Supabase script tag (`https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2`), loaded before `questions.js`, for Google login.
 - Four files: `index.html` (the screens), `style.css` (the look), `app.js` (the logic), `questions.js` (the question bank). Add a new file only when I ask for it.
 - It must work by double-clicking `index.html`. So load scripts with plain `<script src>` tags, `questions.js` before `app.js`. No `import`, no `fetch()` of local files.
 - Phone first: design for a 360-pixel-wide screen, then check it also looks fine on a laptop.

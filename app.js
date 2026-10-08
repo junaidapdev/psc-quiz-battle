@@ -2,7 +2,13 @@
 const QUESTIONS_PER_ROUND = 10;
 const SECONDS_PER_QUESTION = 20;
 
+// Supabase project (for Google login).
+// The publishable key is safe to show in the browser.
+const SUPABASE_URL = "https://pbcjllyjlvuezliwfuuo.supabase.co";
+const SUPABASE_KEY = "sb_publishable_4-NCaQ0DxHUBNna3No3jRw_BMdhyUxE";
+
 // Things we change while the quiz runs
+let currentUser = null;  // the logged-in player, or null
 let roundQuestions = []; // the questions in this round
 let currentIndex = 0;    // which question we are on
 let answers = [];        // the player's choice for each question (null = time ran out)
@@ -25,6 +31,17 @@ const scoreText = document.getElementById("score");
 const mistakesTitle = document.getElementById("mistakes-title");
 const mistakesBox = document.getElementById("mistakes");
 const tryAgainButton = document.getElementById("try-again-button");
+const loggedOutBox = document.getElementById("logged-out-box");
+const loggedInBox = document.getElementById("logged-in-box");
+const loginButton = document.getElementById("login-button");
+const loginError = document.getElementById("login-error");
+const logoutButton = document.getElementById("logout-button");
+const userName = document.getElementById("user-name");
+
+// Connect to Supabase. If the library did not load (no internet), skip it.
+const supabaseClient = window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
 
 // Show one screen and hide the others
 function showScreen(screen) {
@@ -48,6 +65,11 @@ function shuffle(list) {
 
 // Start a new round of random questions
 function startRound() {
+  // Players must log in first
+  if (!currentUser) {
+    showScreen(startScreen);
+    return;
+  }
   // Skip questions that are not checked yet
   // Keep only the chosen topic, unless "all" is chosen
   const topic = topicSelect.value;
@@ -198,7 +220,73 @@ function fillTopics() {
   });
 }
 
+// Get the first name from the Google account
+function firstName(user) {
+  const meta = user.user_metadata || {};
+  const fullName = meta.full_name || meta.name || "";
+  if (fullName) {
+    return fullName.split(" ")[0];
+  }
+  // No name: use the part of the email before "@"
+  return (user.email || "").split("@")[0];
+}
+
+// Show the login button or the player's name, Log out and Start
+function showLoginState(user) {
+  currentUser = user;
+  loggedOutBox.hidden = !!user;
+  loggedInBox.hidden = !user;
+  if (user) {
+    userName.textContent = "നമസ്കാരം, " + firstName(user);
+  }
+}
+
+// Show a login problem under the login button
+function showLoginError(message) {
+  loginError.textContent = message;
+  loginError.hidden = false;
+}
+
+// Send the player to Google, then back to this page
+function logIn() {
+  if (!supabaseClient) {
+    showLoginError("ലോഗിൻ ലോഡ് ആയില്ല. ഇന്റർനെറ്റ് പരിശോധിക്കുക.");
+    return;
+  }
+  supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    // Come back to this page, without any old "#..." or "?..." part
+    options: { redirectTo: window.location.href.split("#")[0].split("?")[0] }
+  }).then(function (result) {
+    if (result.error) {
+      showLoginError("ലോഗിൻ പരാജയപ്പെട്ടു: " + result.error.message);
+    }
+  });
+}
+
+// Log out and go back to the start screen
+function logOut() {
+  supabaseClient.auth.signOut().then(function () {
+    showLoginState(null);
+    showScreen(startScreen);
+  });
+}
+
+// Watch for log in and log out (also runs once when the page opens)
+function setUpLogin() {
+  if (!supabaseClient) {
+    showLoginState(null);
+    return;
+  }
+  supabaseClient.auth.onAuthStateChange(function (event, session) {
+    showLoginState(session ? session.user : null);
+  });
+}
+
 fillTopics();
+setUpLogin();
+loginButton.addEventListener("click", logIn);
+logoutButton.addEventListener("click", logOut);
 startButton.addEventListener("click", startRound);
 // Try again: a new round in a new order
 tryAgainButton.addEventListener("click", startRound);
